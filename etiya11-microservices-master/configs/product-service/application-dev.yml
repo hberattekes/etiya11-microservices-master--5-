@@ -2,3 +2,11 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Keycloak realm'i: token imzaları bu issuer'ın JWKS endpoint'inden doğrulanır.
+          issuer-uri: http://localhost:8090/realms/etiya-crm-project
