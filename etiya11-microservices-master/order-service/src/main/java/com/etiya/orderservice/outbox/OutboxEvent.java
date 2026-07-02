@@ -16,7 +16,6 @@ import java.util.UUID;
  * A message queued in the Transactional Outbox table (H2).
  *
  * <p>The business layer records a row here instead of publishing to Kafka directly. A
- * {@link OutboxMessageRelay polling relay} later reads {@link OutboxStatus#PENDING} rows and
  * forwards the {@link #payload} (already serialized JSON) to the {@link #destination} binding,
  * flipping the row to {@link OutboxStatus#PUBLISHED} once the broker accepts it.</p>
  *
@@ -78,35 +77,17 @@ public class OutboxEvent {
     }
 
     public OutboxEvent(String aggregateType, String aggregateId, String eventType,
-                       String destination, String payload, Instant createdAt) {
+                       String payload, Instant createdAt) {
         this.eventId = UUID.randomUUID().toString();
         this.aggregateType = aggregateType;
         this.aggregateId = aggregateId;
         this.eventType = eventType;
-        this.destination = destination;
         this.payload = payload;
         this.status = OutboxStatus.PENDING;
         this.createdAt = createdAt;
         this.retryCount = 0;
     }
 
-    public void markPublished(Instant when) {
-        this.status = OutboxStatus.PUBLISHED;
-        this.publishedAt = when;
-    }
-
-    /**
-     * Marks the event as permanently failed after retries are exhausted, keeping the last error.
-     * The message is truncated to the {@code EXCEPTION_MESSAGE} column width.
-     */
-    public void markFailed(String exceptionMessage) {
-        this.status = OutboxStatus.FAILED;
-        this.exceptionMessage = truncate(exceptionMessage, 2000);
-    }
-
-    public void incrementRetryCount() {
-        this.retryCount++;
-    }
 
     private static String truncate(String value, int maxLength) {
         if (value == null || value.length() <= maxLength) {

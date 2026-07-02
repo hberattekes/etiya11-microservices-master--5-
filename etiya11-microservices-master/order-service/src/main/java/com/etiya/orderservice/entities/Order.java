@@ -1,18 +1,30 @@
 package com.etiya.orderservice.entities;
 
+import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 
 /**
  * Domain entity. Persistence is in-memory for now; later this can be mapped to a DB table.
  */
+@Entity
+@Table(name = "orders")
 public class Order {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(nullable = false)
     private int customerId;
+    @Column(nullable = false)
     private int productId;
+    @Column(nullable = false)
     private int quantity;
+    @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal unitPrice;
+    @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal totalPrice;
+    @Column(nullable = false)
     private String address;
 
     public Order() {

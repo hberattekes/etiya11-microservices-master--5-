@@ -10,9 +10,4 @@ import java.util.List;
  */
 public interface OutboxRepository extends JpaRepository<OutboxEvent, Long> {
 
-    /**
-     * Oldest-first batch of events in the given status, used by the polling relay
-     * to publish {@link OutboxStatus#PENDING} messages in insertion order.
-     */
-    List<OutboxEvent> findByStatusOrderByIdAsc(OutboxStatus status, Pageable pageable);
 }

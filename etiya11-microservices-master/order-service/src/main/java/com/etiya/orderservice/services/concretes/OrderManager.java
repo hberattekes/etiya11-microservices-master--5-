@@ -54,7 +54,6 @@ public class OrderManager implements OrderService {
                 "Order",
                 String.valueOf(saved.getId()),
                 "OrderCreated",
-                ORDER_CREATED_BINDING,
                 new OrderCreatedEvent(
                         saved.getId(),
                         saved.getCustomerId(),

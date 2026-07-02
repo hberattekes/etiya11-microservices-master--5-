@@ -3,6 +3,17 @@ server:
   port: 0
 
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/productdb
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   cloud:
     function:
       definition: orderCreated
@@ -11,9 +22,8 @@ spring:
         binder:
           brokers: localhost:9092
       bindings:
-        # Consumer: "orderCreated" function reads Kafka topic "order-created"
         orderCreated-in-0:
-          destination: order-created
+          destination: cdc.public.outbox_events   # was: order-created
           group: product-service
 
 management:

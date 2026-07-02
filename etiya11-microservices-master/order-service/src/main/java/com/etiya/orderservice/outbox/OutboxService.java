@@ -28,18 +28,13 @@ public class OutboxService {
      * @param aggregateType domain aggregate, e.g. {@code "Order"}
      * @param aggregateId   aggregate instance id, e.g. the order id
      * @param eventType     logical event name, e.g. {@code "OrderCreated"}
-     * @param destination   Spring Cloud Stream output binding to relay to
      * @param payload       event body, serialized to JSON and sent as-is to the broker
      */
-    public OutboxEvent record(String aggregateType, String aggregateId, String eventType,
-                              String destination, Object payload) {
+    public OutboxEvent record(String aggregateType, String aggregateId,
+                              String eventType, Object payload) {
         OutboxEvent event = new OutboxEvent(
-                aggregateType,
-                aggregateId,
-                eventType,
-                destination,
-                serialize(payload),
-                Instant.now());
+                aggregateType, aggregateId, eventType,
+                serialize(payload), Instant.now());
         return outboxRepository.save(event);
     }
 
