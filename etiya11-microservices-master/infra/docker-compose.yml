@@ -2,13 +2,13 @@
 #
 # Çalıştırmak için:
 #   cd infra
-#   podman compose -f podman-compose.yml up -d
+#   podman compose -f docker-compose.yml up -d
 #
 # Durdurmak için:
-#   podman compose -f podman-compose.yml down
+#   podman compose -f docker-compose.yml down
 #
 # Volume'lerle birlikte tamamen silmek için:
-#   podman compose -f podman-compose.yml down -v
+#   podman compose -f docker-compose.yml down -v
 
 version: "3.8"
 
@@ -75,9 +75,29 @@ services:
     networks:
       - etiya-net
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.1
+    container_name: etiya-keycloak
+    restart: unless-stopped
+    command: start-dev
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HTTP_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+    ports:
+      - "8090:8080"   # gateway 8080'i aldığı için Keycloak host'ta 8090'a maplendi
+    volumes:
+      - keycloak-data:/opt/keycloak/data
+    networks:
+      - etiya-net
+
 volumes:
   postgres-data:
   kafka-data:
+  keycloak-data:
+
 
 networks:
   etiya-net:
