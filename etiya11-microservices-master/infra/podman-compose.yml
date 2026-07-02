@@ -36,6 +36,27 @@ services:
     networks:
       - etiya-net
 
+  postgres-order:
+    image: docker.io/library/postgres:16-alpine
+    container_name: etiya-postgres-order
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: orderdb
+    command: [ "postgres", "-c", "wal_level=logical" ]
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres-order-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d orderdb" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - etiya-net
+
   # ---------------------------------------------------------------------------
   # Apache Kafka (KRaft modu - Zookeeper'a ihtiyaç duymaz)
   # ---------------------------------------------------------------------------
@@ -77,7 +98,9 @@ services:
 
 volumes:
   postgres-data:
+  postgres-order-data:
   kafka-data:
+
 
 networks:
   etiya-net:
