@@ -2,7 +2,7 @@
 # (configs/order-service/*) çekilir.
 spring:
   application:
-    name: eureka-server
+    name: eureka-service
   profiles:
     active: dev
   config:

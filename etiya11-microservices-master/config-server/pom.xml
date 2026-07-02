@@ -10,7 +10,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>config-service</artifactId>
+    <artifactId>config-server</artifactId>
 
         <dependencies>
             <dependency>
@@ -19,12 +19,6 @@
             </dependency>
         </dependencies>
 
-
-    <properties>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <build>
         <plugins>

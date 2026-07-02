@@ -11,7 +11,7 @@ spring:
       server:
         git:
           uri: https://github.com/hberattekes/etiya11-microservices-master--5-.git
-          default-label: master   # repo master dalını kullanıyor (varsayılan 'main' değil)
+          default-label: main   # repo master dalını kullanıyor (varsayılan 'main' değil)
           search-paths: etiya11-microservices-master/configs/{application}
           clone-on-start: true
 
