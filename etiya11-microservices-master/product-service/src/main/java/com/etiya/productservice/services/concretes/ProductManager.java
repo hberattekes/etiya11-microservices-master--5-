@@ -19,7 +19,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Business layer implementation. Maps between request/response DTOs and the
@@ -100,11 +102,11 @@ public class ProductManager implements ProductService {
                         product.getUnitPrice(),
                         product.getStock(),
                         product.getDescription()))
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
 
-    @Cacheable(cacheNames = PRODUCTS_CACHE) // ilk defa return ediliyorsa
+    @Cacheable(cacheNames = PRODUCT_CACHE) // ilk defa return ediliyorsa
     @Override
     public GetByIdProductResponse getById(int id) {
         Product product = findProductOrThrow(id);
