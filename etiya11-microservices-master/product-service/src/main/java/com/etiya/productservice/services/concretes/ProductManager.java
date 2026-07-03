@@ -14,6 +14,9 @@ import com.etiya.productservice.services.exceptions.BusinessException;
 
 import jakarta.transaction.Transactional;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,10 +31,14 @@ public class ProductManager implements ProductService {
 
     private final ProductRepository productRepository;
 
+    static final String PRODUCTS_CACHE = "products";
+    static final String PRODUCT_CACHE = "product";
+
     public ProductManager(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
+    @CacheEvict(cacheNames = PRODUCTS_CACHE, allEntries = true)
     @Override
     public CreatedProductResponse add(CreateProductRequest request) {
         Product product = new Product();
@@ -50,6 +57,10 @@ public class ProductManager implements ProductService {
                 saved.getDescription());
     }
 
+
+    @Caching(evict = {
+            @CacheEvict(cacheNames = PRODUCTS_CACHE, allEntries = true),
+            @CacheEvict(cacheNames = PRODUCT_CACHE, key = "#request.id")})
     @Override
     public UpdatedProductResponse update(UpdateProductRequest request) {
         Product product = findProductOrThrow(request.getId());
@@ -68,6 +79,9 @@ public class ProductManager implements ProductService {
                 saved.getDescription());
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = PRODUCTS_CACHE, allEntries = true),
+            @CacheEvict(cacheNames = PRODUCT_CACHE, key = "#id")})
     @Override
     public DeletedProductResponse delete(int id) {
         Product product = findProductOrThrow(id);
@@ -75,6 +89,8 @@ public class ProductManager implements ProductService {
         return new DeletedProductResponse(product.getId(), product.getName());
     }
 
+
+    @Cacheable(cacheNames = PRODUCTS_CACHE) // ilk defa return ediliyorsa
     @Override
     public List<GetAllProductsResponse> getAll() {
         return productRepository.findAll().stream()
@@ -87,6 +103,8 @@ public class ProductManager implements ProductService {
                 .toList();
     }
 
+
+    @Cacheable(cacheNames = PRODUCTS_CACHE) // ilk defa return ediliyorsa
     @Override
     public GetByIdProductResponse getById(int id) {
         Product product = findProductOrThrow(id);

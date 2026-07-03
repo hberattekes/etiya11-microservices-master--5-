@@ -3,12 +3,20 @@ server:
   port: 0
 
 spring:
-  # H2 in-memory database backing the Transactional Outbox table.
+  # MySQL: orders + Transactional Outbox tabloları burada tutulur (infra/docker-compose.yml -> mysql, host portu 3307).
   datasource:
-    url: jdbc:h2:mem:orderdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ""
+    url: jdbc:mysql://localhost:3307/orderdb
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
 
   security:
     oauth2:
@@ -17,20 +25,6 @@ spring:
           # Keycloak realm'i: token imzaları bu issuer'ın JWKS endpoint'inden doğrulanır.
           issuer-uri: http://localhost:8090/realms/etiya-crm-project
 
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-  h2:
-    console:
-      enabled: true       # UI: http://<host>:<port>/h2-console  (JDBC URL: jdbc:h2:mem:orderdb, user: sa)
-      path: /h2-console
-      settings:
-        web-allow-others: true
   cloud:
     stream:
       kafka:

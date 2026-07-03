@@ -36,6 +36,26 @@ services:
     networks:
       - etiya-net
 
+  mysql:
+    image: docker.io/library/mysql:8.4
+    container_name: etiya-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: orderdb
+    ports:
+      - "3307:3306"   # lokal MySQL kurulumlarıyla çakışmaması için host'ta 3307
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - etiya-net
+
+
   # ---------------------------------------------------------------------------
   # Apache Kafka (KRaft modu - Zookeeper'a ihtiyaç duymaz)
   # ---------------------------------------------------------------------------
@@ -93,10 +113,46 @@ services:
     networks:
       - etiya-net
 
+  redis:
+    image: docker.io/library/redis:7-alpine
+    container_name: etiya-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - etiya-net
+
+    # Redis içeriğini incelemek için web arayüzü: http://localhost:5540
+    # Bağlantı eklerken host olarak "redis" (compose servis adı) kullanılmalı.
+  redisinsight:
+    image: docker.io/redis/redisinsight:latest
+    container_name: etiya-redisinsight
+    restart: unless-stopped
+    ports:
+      - "5540:5540"
+    volumes:
+      - redisinsight-data:/data
+    depends_on:
+      - redis
+    networks:
+      - etiya-net
+
+
+
 volumes:
   postgres-data:
   kafka-data:
   keycloak-data:
+  mysql-data:
+  redis-data:
+  redisinsight-data:
 
 
 networks:
