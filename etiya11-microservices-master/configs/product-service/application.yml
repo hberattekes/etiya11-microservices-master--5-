@@ -16,18 +16,18 @@ spring:
           destination: order-created
           group: product-service
     # PostgreSQL: products tablosu burada tutulur (infra/docker-compose.yml -> postgres, host portu 5433).
-    datasource:
-      url: jdbc:postgresql://localhost:5433/productdb
-      driver-class-name: org.postgresql.Driver
-      username: postgres
-      password: postgres
-    jpa:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/productdb
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
       hibernate:
-        ddl-auto: update
-      show-sql: true
-      properties:
-        hibernate:
-          format_sql: true
+        format_sql: true
 
   cache:
     type: redis

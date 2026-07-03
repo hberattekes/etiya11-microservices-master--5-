@@ -1,16 +1,26 @@
 package com.etiya.productservice.entities;
 
+import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 
 /**
  * Domain entity. Persistence is in-memory for now; later this can be mapped to a DB table.
  */
+
+@Entity
 public class Product {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "unit_price")
     private BigDecimal unitPrice;
+    @Column(name = "stock")
     private int stock;
+    @Column(name = "description")
     private String description;
 
     public Product() {
